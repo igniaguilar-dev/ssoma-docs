@@ -1,0 +1,33 @@
+{% extends 'base.html' %} {% block content %}
+{{ obra.nombre }}
+Check List Pre-uso – Arnés y Retráctil
+Item 1.4 – Jerarquía de controles
+
+Datos Generales
+Fecha 
+dd/mm/aaaa
+Área 
+Supervisor 
+{% set COND_OPTS = [('B','Bueno'),('M','Malo'),('N','No Tiene'),('NA','No Aplica')] %} {% macro seccion(titulo, prefix, codigo_name, filas) %}
+{{ titulo }} Código: 
+{% for v,l in COND_OPTS %}{% endfor %} {% for code, label in filas %} {% for v,l in COND_OPTS %} {% endfor %} {% endfor %}
+N°	Elementos a inspeccionar	{{ v }}
+{{ l }}
+{{ code }}	{{ label }}	
+{% endmacro %} {{ seccion('1 – Aspectos Generales (Arnés)', 'arnes', 'codigo_arnes', [ ('1.1','Correa de Hombro'),('1.2','Banda Secundaria'), ('1.3','Banda Subglutea'),('1.4','Banda de muslo'), ('1.5','Hebillas'),('1.6','Anillos D'), ]) }} {{ seccion('2 – Línea de anclaje', 'linea', 'codigo_linea', [ ('2.1','Mosquetón'),('2.2','Costuras'), ('2.3','Línea de sujeción'), ('2.4','Gancho de seguridad de cierre y bloqueo automático'), ('2.5','Absorbedor de energía (Amortiguador)'), ]) }} {{ seccion('3 – Block retráctil', 'block', 'codigo_block', [ ('3.1','La manija de anclaje está en buenas condiciones'), ('3.2','El mosquetón no cuenta con malformaciones, corrosión y/o grietamiento'), ('3.3','La carcasa se encuentra en buen estado'), ('3.4','El cable y/o cinta se despliega y retrae'), ('3.5','Se encuentra activado el indicador de impacto'), ('3.6','El tejido trenzado se encuentra en buen estado'), ]) }}
+Observaciones y Recomendaciones
+Observaciones 
+Recomendaciones 
+Firmas
+Realizado por
+
+Nombre
+ 
+Cargo
+Revisado por
+
+Nombre
+ 
+Cargo
+Guardar y Generar PDF Cancelar
+{% endblock %}
