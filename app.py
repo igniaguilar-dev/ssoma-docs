@@ -261,6 +261,8 @@ def eliminar_doc(obra_id, doc_id):
     db.close()
     return redirect(url_for('obra', obra_id=obra_id))
 
+init_db()
+
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
