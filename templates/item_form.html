@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4" style="max-width:580px;">
+  <a href="/obra/{{ obra.id }}" class="text-muted text-decoration-none" style="font-size:13px;"><i class="bi bi-chevron-left"></i> {{ obra.nombre }}</a>
+  <h5 class="fw-bold mt-2 mb-1">Item {{ item[0] }} – {{ item[1] }}</h5>
+
+  <div class="card shadow-sm mt-3">
+    <div class="card-body p-4">
+      <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">
+            {% if tipo == 'subir_foto' %}Foto / Imagen
+            {% elif tipo == 'subir_pdf' %}Archivo PDF
+            {% else %}Archivo (foto o PDF)
+            {% endif %}
+            <span class="text-danger">*</span>
+          </label>
+          <input type="file" name="archivo" class="form-control"
+            accept="{% if tipo=='subir_pdf' %}.pdf{% elif tipo=='subir_foto' %}image/*{% else %}image/*,.pdf{% endif %}"
+            required>
+          <div class="form-text">
+            {% if tipo == 'subir_foto' %}Solo imágenes: JPG, PNG, WEBP
+            {% elif tipo == 'subir_pdf' %}Solo PDF
+            {% else %}Imágenes o PDF
+            {% endif %}
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="font-size:13px;">Fecha</label>
+          <input type="date" name="fecha" class="form-control" value="{{ today }}">
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold" style="font-size:13px;">Descripción (opcional)</label>
+          <textarea name="descripcion" class="form-control" rows="2"
+            placeholder="Ej: Fotocheck de Juan Pérez, vigente hasta dic 2025"></textarea>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-accent flex-fill"><i class="bi bi-upload me-2"></i>Subir archivo</button>
+          <a href="/obra/{{ obra.id }}" class="btn btn-outline-secondary">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

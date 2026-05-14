@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4" style="max-width:900px;">
+  <a href="/obra/{{ obra.id }}" class="text-muted text-decoration-none" style="font-size:13px;"><i class="bi bi-chevron-left"></i> {{ obra.nombre }}</a>
+  <h5 class="fw-bold mt-2 mb-1">IPERC Continuo</h5>
+  <p class="text-muted mb-4" style="font-size:13px;">Item 1.1 – Evaluación de Riesgos Documentada</p>
+
+  <form method="POST">
+    <!-- Datos generales -->
+    <div class="card shadow-sm mb-3">
+      <div class="section-title">Datos Generales</div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-4"><label class="form-label fw-semibold" style="font-size:13px;">Área / Proyecto</label>
+            <input type="text" name="area" class="form-control form-control-sm" required></div>
+          <div class="col-md-4"><label class="form-label fw-semibold" style="font-size:13px;">Zona / Nivel</label>
+            <input type="text" name="zona" class="form-control form-control-sm"></div>
+          <div class="col-md-2"><label class="form-label fw-semibold" style="font-size:13px;">Turno</label>
+            <input type="text" name="turno" class="form-control form-control-sm" placeholder="DÍA"></div>
+          <div class="col-md-2"><label class="form-label fw-semibold" style="font-size:13px;">Fecha</label>
+            <input type="date" name="fecha" class="form-control form-control-sm" value="{{ today }}"></div>
+          <div class="col-md-6"><label class="form-label fw-semibold" style="font-size:13px;">Labor / Lugar</label>
+            <input type="text" name="labor" class="form-control form-control-sm"></div>
+          <div class="col-md-6"><label class="form-label fw-semibold" style="font-size:13px;">Nombre de actividad / tarea</label>
+            <input type="text" name="actividad" class="form-control form-control-sm" required></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trabajadores -->
+    <div class="card shadow-sm mb-3">
+      <div class="section-title">Datos de los Trabajadores</div>
+      <div class="card-body p-0">
+        <table class="table table-sm mb-0" style="font-size:13px;">
+          <thead style="background:#f9f9f9;"><tr><th style="width:120px;">Hora</th><th>Nombres y Apellidos</th></tr></thead>
+          <tbody>
+            {% for i in range(1,10) %}
+            <tr>
+              <td><input type="time" name="hora_{{ i }}" class="form-control form-control-sm"></td>
+              <td><input type="text" name="trabajador_{{ i }}" class="form-control form-control-sm" placeholder="Trabajador {{ i }}"></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Peligros IPERC -->
+    <div class="card shadow-sm mb-3">
+      <div class="section-title d-flex justify-content-between align-items-center">
+        <span>IPERC Continuo – Peligros y Controles</span>
+        <button type="button" class="btn btn-sm btn-light" onclick="addPeligro()">+ Agregar fila</button>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-sm mb-0" style="font-size:12px;" id="tablaPeligros">
+          <thead style="background:#fff7e6;">
+            <tr>
+              <th>Peligro / Aspecto</th>
+              <th>Riesgo / Impacto</th>
+              <th style="width:90px;">Nivel Antes</th>
+              <th>Medidas de Control</th>
+              <th style="width:90px;">Nivel Después</th>
+              <th style="width:40px;"></th>
+            </tr>
+          </thead>
+          <tbody id="peligrosBody">
+            {% for i in range(5) %}
+            <tr>
+              <td><input type="text" name="peligro_{{ i }}" class="form-control form-control-sm"></td>
+              <td><input type="text" name="riesgo_{{ i }}" class="form-control form-control-sm"></td>
+              <td><select name="nivel_antes_{{ i }}" class="form-select form-select-sm">
+                <option value="">-</option><option>A</option><option>M</option><option>B</option>
+              </select></td>
+              <td><input type="text" name="medidas_{{ i }}" class="form-control form-control-sm"></td>
+              <td><select name="nivel_despues_{{ i }}" class="form-select form-select-sm">
+                <option value="">-</option><option>A</option><option>M</option><option>B</option>
+              </select></td>
+              <td><button type="button" class="btn btn-sm btn-outline-danger py-0 px-1" onclick="this.closest('tr').remove()">✕</button></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Secuencia -->
+    <div class="card shadow-sm mb-3">
+      <div class="section-title">Secuencia para Controlar el Peligro</div>
+      <div class="card-body">
+        <textarea name="secuencia" class="form-control" rows="4"
+          placeholder="1. ...\n2. ...\n3. ..."></textarea>
+      </div>
+    </div>
+
+    <!-- Supervisor -->
+    <div class="card shadow-sm mb-4">
+      <div class="section-title">Datos del Supervisor</div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label fw-semibold" style="font-size:13px;">Nombre del Supervisor</label>
+            <input type="text" name="supervisor" class="form-control form-control-sm"></div>
+          <div class="col-md-6"><label class="form-label fw-semibold" style="font-size:13px;">Medida Correctiva</label>
+            <input type="text" name="medida_correctiva" class="form-control form-control-sm"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-accent px-5"><i class="bi bi-file-earmark-pdf me-2"></i>Guardar y Generar PDF</button>
+      <a href="/obra/{{ obra.id }}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+let rowCount = 5;
+function addPeligro() {
+  const i = rowCount++;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" name="peligro_${i}" class="form-control form-control-sm"></td>
+    <td><input type="text" name="riesgo_${i}" class="form-control form-control-sm"></td>
+    <td><select name="nivel_antes_${i}" class="form-select form-select-sm">
+      <option value="">-</option><option>A</option><option>M</option><option>B</option></select></td>
+    <td><input type="text" name="medidas_${i}" class="form-control form-control-sm"></td>
+    <td><select name="nivel_despues_${i}" class="form-select form-select-sm">
+      <option value="">-</option><option>A</option><option>M</option><option>B</option></select></td>
+    <td><button type="button" class="btn btn-sm btn-outline-danger py-0 px-1" onclick="this.closest('tr').remove()">✕</button></td>`;
+  document.getElementById('peligrosBody').appendChild(tr);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4" style="max-width:900px;">
+  <a href="/obra/{{ obra.id }}" class="text-muted text-decoration-none" style="font-size:13px;"><i class="bi bi-chevron-left"></i> {{ obra.nombre }}</a>
+  <h5 class="fw-bold mt-2 mb-1">Item 1.2 – Identificación de Peligros</h5>
+  <p class="text-muted mb-4" style="font-size:13px;">Información extraída automáticamente del IPERC (Item 1.1)</p>
+
+  {% if registros %}
+    {% for r in registros %}
+    <div class="card shadow-sm mb-4">
+      <div class="section-title d-flex justify-content-between">
+        <span>IPERC: {{ r.datos.get('actividad','') }}</span>
+        <span style="font-size:12px;font-weight:400;">{{ r.datos.get('fecha','') }}</span>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-sm mb-0" style="font-size:13px;">
+          <thead style="background:#fff7e6;">
+            <tr>
+              <th>Peligro / Aspecto</th>
+              <th>Riesgo / Impacto</th>
+              <th class="text-center">Nivel Antes</th>
+              <th>Medidas de Control</th>
+              <th class="text-center">Nivel Después</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in r.datos.get('peligros',[]) %}
+            <tr>
+              <td>{{ p.get('peligro','') }}</td>
+              <td>{{ p.get('riesgo','') }}</td>
+              <td class="text-center">
+                <span class="badge {% if p.get('nivel_antes','') == 'A' %}bg-danger
+                  {% elif p.get('nivel_antes','') == 'M' %}bg-warning text-dark
+                  {% elif p.get('nivel_antes','') == 'B' %}bg-success
+                  {% else %}bg-secondary{% endif %}">
+                  {{ p.get('nivel_antes','—') }}
+                </span>
+              </td>
+              <td>{{ p.get('medidas','') }}</td>
+              <td class="text-center">
+                <span class="badge {% if p.get('nivel_despues','') == 'A' %}bg-danger
+                  {% elif p.get('nivel_despues','') == 'M' %}bg-warning text-dark
+                  {% elif p.get('nivel_despues','') == 'B' %}bg-success
+                  {% else %}bg-secondary{% endif %}">
+                  {{ p.get('nivel_despues','—') }}
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if r.doc.pdf_filename %}
+      <div class="card-footer bg-transparent">
+        <a href="/pdf/{{ r.doc.pdf_filename }}" target="_blank" class="btn btn-sm btn-outline-danger">
+          <i class="bi bi-file-pdf me-1"></i>Ver PDF del IPERC
+        </a>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="card shadow-sm p-5 text-center text-muted">
+      <i class="bi bi-exclamation-circle fs-1 d-block mb-2"></i>
+      No hay IPERC registrado aún para esta obra.<br>
+      <a href="/obra/{{ obra.id }}/item/1.1" class="btn btn-accent mt-3">
+        <i class="bi bi-plus me-1"></i>Crear IPERC primero
+      </a>
+    </div>
+  {% endif %}
+  <a href="/obra/{{ obra.id }}" class="btn btn-outline-secondary mt-2">← Volver</a>
+</div>
+{% endblock %}

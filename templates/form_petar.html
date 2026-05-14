@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4" style="max-width:860px;">
+  <a href="/obra/{{ obra.id }}" class="text-muted text-decoration-none" style="font-size:13px;"><i class="bi bi-chevron-left"></i> {{ obra.nombre }}</a>
+  <h5 class="fw-bold mt-2 mb-1">PETAR – Permiso de Trabajo en Altura</h5>
+  <p class="text-muted mb-4" style="font-size:13px;">Item 1.5</p>
+  <form method="POST">
+
+    <div class="card shadow-sm mb-3">
+      <div class="section-title">Datos Generales</div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-4"><label class="form-label fw-semibold" style="font-size:13px;">Área</label>
+            <input type="text" name="area" class="form-control form-control-sm"></div>
+          <div class="col-md-4"><label class="form-label fw-semibold" style="font-size:13px;">Lugar</label>
+            <input type="text" name="lugar" class="form-control form-control-sm"></div>
+          <div class="col-md-2"><label class="form-label fw-semibold" style="font-size:13px;">Fecha</label>
+            <input type="date" name="fecha" class="form-control form-control-sm" value="{{ today }}"></div>
+          <div class="col-md-2"><label class="form-label fw-semibold" style="font-size:13px;">N°</label>
+            <input type="text" name="numero" class="form-control form-control-sm"></div>
+          <div class="col-md-3"><label class="form-label fw-semibold" style="font-size:13px;">Hora inicio</label>
+            <input type="time" name="hora_inicio" class="form-control form-control-sm"></div>
+          <div class="col-md-3"><label class="form-label fw-semibold" style="font-size:13px;">Hora final</label>
+            <input type="time" name="hora_final" class="form-control form-control-sm"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+      <div class="section-title">Verificaciones de Autorización</div>
+      <div class="card-body">
+        {% for field, label in [('cert_medica','Certificado de suficiencia médica vigente'),
+                                ('cap_altura','Capacitación sobre "Trabajo en Altura"'),
+                                ('trab_calificados','Son trabajadores calificados')] %}
+        <div class="d-flex align-items-center gap-4 mb-2">
+          <span style="font-size:13px;min-width:320px;">{{ label }}</span>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="{{ field }}" value="si" id="{{ field }}_si">
+            <label class="form-check-label" for="{{ field }}_si" style="font-size:13px;">Sí</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="{{ field }}" value="no" id="{{ field }}_no" checked>
+            <label class="form-check-label" for="{{ field }}_no" style="font-size:13px;">No</label>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+      <div class="section-title">1. Descripción del Trabajo</div>
+      <div class="card-body">
+        <textarea name="descripcion_trabajo" class="form-control" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+      <div class="section-title">2. Personal Autorizado</div>
+      <div class="card-body p-0">
+        <table class="table table-sm mb-0" style="font-size:13px;">
+          <thead style="background:#fff7e6;"><tr><th>Ocupación</th><th>Nombres y Apellidos</th></tr></thead>
+          <tbody>
+            {% for i in range(1,10) %}
+            <tr>
+              <td><input type="text" name="ocupacion_{{ i }}" class="form-control form-control-sm"></td>
+              <td><input type="text" name="personal_{{ i }}" class="form-control form-control-sm"></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+      <div class="section-title">3. Equipo de Protección Personal (EPP)</div>
+      <div class="card-body">
+        <div class="row g-2">
+          {% for key, label in [
+            ('casco_barbiquejo','Casco con barbiquejo/carrilera'),
+            ('arnes_cuerpo_entero','Arnés de cuerpo entero'),
+            ('mameluco','Mameluco'),
+            ('correa_lampara','Correa para lámpara'),
+            ('guantes_jebe','Guantes de jebe'),
+            ('morral_lona','Morral de lona'),
+            ('botas_jebe','Botas de jebe'),
+            ('protector_oidos','Protector de oídos'),
+            ('respirador','Respirador c/gases, polvo'),
+            ('linea_anclaje','Línea de anclaje doble vía'),
+            ('protector_visual','Protector visual'),
+            ('correa_antitrauma','Correa antitrauma'),
+          ] %}
+          <div class="col-md-6">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="epp_{{ key }}" id="epp_{{ key }}" value="1">
+              <label class="form-check-label" for="epp_{{ key }}" style="font-size:13px;">{{ label }}</label>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+      <div class="section-title">4. Herramientas, Equipos y Material</div>
+      <div class="card-body">
+        <textarea name="herramientas" class="form-control" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-3">
+      <div class="section-title">5. Procedimiento / Plan de Trabajo</div>
+      <div class="card-body">
+        <textarea name="procedimiento" class="form-control" rows="4"
+          placeholder="1. ...\n2. ...\n3. ..."></textarea>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="section-title">Autorizaciones</div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-5"><label class="form-label fw-semibold" style="font-size:13px;">Ingeniero Supervisor</label>
+            <input type="text" name="supervisor_nombre" class="form-control form-control-sm"></div>
+          <div class="col-md-3"><label class="form-label fw-semibold" style="font-size:13px;">CIP</label>
+            <input type="text" name="supervisor_cip" class="form-control form-control-sm"></div>
+          <div class="col-md-4"><label class="form-label fw-semibold" style="font-size:13px;">Jefe de Área</label>
+            <input type="text" name="jefe_nombre" class="form-control form-control-sm"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-accent px-5"><i class="bi bi-file-earmark-pdf me-2"></i>Guardar y Generar PDF</button>
+      <a href="/obra/{{ obra.id }}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
